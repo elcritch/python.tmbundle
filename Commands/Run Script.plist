@@ -40,6 +40,17 @@ TextMate::Executor.run(ENV["TM_PYTHON"] || "python", "-u", ENV["TM_FILEPATH"], :
         (method ? "method #{CGI::escapeHTML method}" : "&lt;em&gt;at top level&lt;/em&gt;") +
         "&lt;/a&gt; in &lt;strong&gt;#{CGI::escapeHTML display_name}&lt;/strong&gt; at line #{line}&lt;br/&gt;\n"
     end
+  else
+	if str =~ /^(#+)\s+(.+)/
+	  level=$1.length.to_s
+	  title=$2
+	  "&lt;h#{level}&gt;#{$1} #{title} &lt;/h#{level}&gt;"
+	elsif str =~ /\`[^\`]+\`/
+	  ans = str.gsub(/`([^`]+)`/) {|t| "`&lt;tt&gt;&lt;dfn&gt;HI: #{$1} :THEN&lt;/dfn&gt;&lt;/tt&gt;`"}
+	  ans
+	else
+	  str+"&lt;br&gt;"
+	end
   end
 end</string>
 	<key>input</key>
