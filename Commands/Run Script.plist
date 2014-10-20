@@ -45,9 +45,13 @@ TextMate::Executor.run(ENV["TM_PYTHON"] || "python", "-u", ENV["TM_FILEPATH"], :
 	  level=$1.length.to_s
 	  title=$2
 	  "&lt;h#{level}&gt;#{$1} #{title} &lt;/h#{level}&gt;"
-	elsif str =~ /\`[^\`]+\`/
-	  ans = str.gsub(/`([^`]+)`/) {|t| "`&lt;tt&gt;&lt;dfn&gt;HI: #{$1} :THEN&lt;/dfn&gt;&lt;/tt&gt;`"}
-	  ans
+	elsif str =~ /[\`\_\~\*]/
+	  ans = str
+	  ans = ans.gsub(/`(.+?)`/) {|t| "`&lt;tt&gt;&lt;dfn&gt;#{$1}&lt;/dfn&gt;&lt;/tt&gt;`"}
+	  ans = ans.gsub(/_(\w.+?)_/) {|t| "_&lt;i&gt;#{$1}&lt;/i&gt;_"}
+	  ans = ans.gsub(/\~(\w.+?)\~/) {|t| "~&lt;em&gt;#{$1}&lt;/em&gt;~"}
+	  ans = ans.gsub(/\*(\w.+?)\*/) {|t| "*&lt;bold&gt;#{$1}&lt;/bold&gt;*"}
+	  ans +"&lt;br&gt;"
 	else
 	  str+"&lt;br&gt;"
 	end
