@@ -1,4 +1,6 @@
+
 # coding: utf-8
+
 """
 tmhooks.py for PyMate.
 
@@ -10,7 +12,7 @@ Also, sys.stdout and sys.stder are wrapped in a utf-8 codec writer.
 
 """
 
-import sys, os
+import sys, os, logging
 
 # remove TM_BUNDLE_SUPPORT from the path.
 if os.environ['TM_BUNDLE_SUPPORT'] in sys.path:
@@ -18,11 +20,15 @@ if os.environ['TM_BUNDLE_SUPPORT'] in sys.path:
 
 # now import local sitecustomize
 try:
-  import sitecustomize
-  if sys.version_info[0] >= 3:
-    from imp import reload
-  reload(sitecustomize)
-except ImportError: pass
+    import sitecustomize
+    if sys.version_info[0] >= 3:
+        from imp import reload
+    reload(sitecustomize)
+except ImportError: 
+    pass
+except Exception as err:
+    pass
+    # logging.warn("Error: %s",err)
 
 import codecs
 
@@ -136,4 +142,13 @@ def tm_excepthook(e_type, e, tb):
             <p id='warning'>You can fix this by changing the string to a unicode string using the 'u' prefix (e.g. u\"foobar\").</p>")
     io.flush()
 
-sys.excepthook = tm_excepthook
+import logging 
+
+def wrap_tm_excepthook(e_type, e, tb):
+    try:
+        tm_excepthook(e_type, e, tb)
+    except:
+        logging.error(e)
+        
+
+sys.excepthook = wrap_tm_excepthook
